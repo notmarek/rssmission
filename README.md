@@ -13,7 +13,7 @@ cargo build --release
 ## Config
 Place your config in the directory that you are planning to run RSSmission from and make sure its name `rssmission.json`. 
 ### Example
-```json
+```
 {
     "server": {
         "url": "http://127.0.0.1:51413/transmission/rpc", // make sure to include the full rpc path

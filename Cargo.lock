@@ -215,9 +215,9 @@ dependencies = [
 
 [[package]]
 name = "env_logger"
-version = "0.8.2"
+version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f26ecb66b4bdca6c1409b40fb255eefc2bd4f6d135dab3c3124f80ffa2a9661e"
+checksum = "17392a012ea30ef05a610aa97dfb49496e71c9f676b27879922ea5bdf60d9d3f"
 dependencies = [
  "atty",
  "humantime",
@@ -1304,9 +1304,9 @@ dependencies = [
 
 [[package]]
 name = "transmission-rpc"
-version = "0.3.3"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e881c656060e5364ecfe4d0a890123f6dbc8a13ecae3f9765a2e12549c3eaff"
+checksum = "f93bff04b478c1b1a640297e0a92bd4700ec781e86ad931c047fa2292242da9a"
 dependencies = [
  "dotenv",
  "enum-iterator",
@@ -1315,7 +1315,6 @@ dependencies = [
  "reqwest",
  "rustc-serialize",
  "serde",
- "tokio",
 ]
 
 [[package]]

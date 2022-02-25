@@ -1,16 +1,15 @@
-
-use std::io::Write;
-use std::fs::OpenOptions;
 use reqwest;
 use rss::Channel;
+use std::fs::OpenOptions;
+use std::io::Write;
 mod models;
 use data_encoding::HEXLOWER;
 use models::{Config, Matcher, RegexMatcher};
 use regex::Regex;
 use ring::digest::{Context, SHA256};
 use std::fs;
-use transmission_rpc::types::{BasicAuth};
-use transmission_rpc::types::{TorrentAddArgs};
+use transmission_rpc::types::BasicAuth;
+use transmission_rpc::types::TorrentAddArgs;
 use transmission_rpc::TransClient;
 // fn build_regexp(matchers: Vec<Matcher>) -> Regex { // Combines all defined matchers into one just realize im very dumb tho..................................................................
 //     let mut regex_matcher_string: String = "".to_owned();
@@ -40,8 +39,7 @@ fn build_regexp(matchers: Vec<Matcher>) -> Vec<RegexMatcher> {
 async fn main() {
     let config_file: String = fs::read_to_string("rssmission.json")
         .expect("Something went wrong reading the configuration file");
-    let mut seen_file: String =
-        fs::read_to_string(".seen").unwrap_or(String::new());
+    let mut seen_file: String = fs::read_to_string(".seen").unwrap_or(String::new());
     let config: Config = serde_json::from_str(format!("{}", config_file).as_str()).unwrap();
     let url: &String = &config.server.as_ref().unwrap().url.as_ref().unwrap();
     let username: &String = &config.server.as_ref().unwrap().username.as_ref().unwrap();
@@ -80,8 +78,19 @@ async fn main() {
                             Some(path) => Some(path.to_string()),
                             _ => None,
                         };
+                        let torrent_link: String = {
+                            if let Some(enc) = item.enclosure() {
+                                if enc.mime_type() == "application/x-bittorrent" {
+                                    enc.url().to_string()
+                                } else {
+                                    item.link().unwrap().to_string()
+                                }
+                            } else {
+                                item.link().unwrap().to_string()
+                            }
+                        };
                         let add: TorrentAddArgs = TorrentAddArgs {
-                            filename: Some(item.link().unwrap().to_string()),
+                            filename: Some(torrent_link),
                             download_dir: path,
                             ..TorrentAddArgs::default()
                         };
@@ -92,13 +101,15 @@ async fn main() {
                             ),
                         };
                         seen_file.push_str(format!("{}\n", sha256digest).as_str());
-                        
                     }
                 }
             }
-            let mut f = OpenOptions::new().write(true).create(true).open(".seen").unwrap();
+            let mut f = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open(".seen")
+                .unwrap();
             f.write_all(seen_file.as_bytes()).unwrap();
         }
-
     }
 }
